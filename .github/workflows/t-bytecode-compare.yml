@@ -104,10 +104,16 @@ jobs:
               else
                 ln -s "${base_dir}/solc-bin/${PLATFORM}/$binary_name" "$binary_name"
 
+                yul_optimizer_flags=()
+                if [[ $solidity_version == 0.6.0 ]] || [[ $solidity_version == 0.6.1 ]]; then
+                  yul_optimizer_flags+=(--force-no-optimize-yul)
+                fi
+
                 "${base_dir}/scripts/prepare_report.py" "./${binary_name}" \
                   --interface cli \
                   --smt-use strip-pragmas \
-                  --report-file "${base_dir}/reports/report-${binary_name}.txt"
+                  --report-file "${base_dir}/reports/report-${binary_name}.txt" \
+                  "${yul_optimizer_flags[@]}"
               fi
 
               cd "${base_dir}"
